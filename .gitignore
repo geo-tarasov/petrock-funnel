@@ -1,0 +1,15 @@
+node_modules
+.env
+.env.*
+!.env.example
+.playwright-mcp
+bot/media/*
+!bot/media/README.md
+*.log
+__pycache__/
+*.pyc
+bot/media-cache/
+# эксплуатация на текущих серверах — адреса и доступы, не для публичного репозитория
+DEPLOY.md
+deploy/
+tools/

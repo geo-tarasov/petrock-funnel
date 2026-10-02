@@ -1,0 +1,19 @@
+{
+  "name": "w3a-funnel-admin",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Pet Rock funnel admin panel (KZ server)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}

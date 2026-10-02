@@ -1,0 +1,20 @@
+{
+  "name": "w3a-funnel-api",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Pet Rock funnel data API (RU server): users, events, delayed jobs",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "migrate": "node src/migrate.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}

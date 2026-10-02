@@ -1,0 +1,62 @@
+# Всё на одном сервере: база, API, бот и админка. Наружу — только бот и админка,
+# на 127.0.0.1: перед ними нужен прокси с HTTPS (nginx, Caddy и т. п.).
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: w3a_funnel
+      POSTGRES_USER: w3a_funnel
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?задайте DB_PASSWORD в .env}
+    volumes:
+      # с PostgreSQL 18 образ хранит данные в /var/lib/postgresql/18/docker
+      - db:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U w3a_funnel -d w3a_funnel"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  api:
+    build: { context: ., dockerfile: api/Dockerfile }
+    restart: unless-stopped
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      DATABASE_URL: postgres://w3a_funnel:${DB_PASSWORD}@db:5432/w3a_funnel
+      API_TOKEN: ${API_TOKEN:?задайте API_TOKEN в .env}
+      OWNER_LOGIN: ${OWNER_LOGIN:-admin}
+      OWNER_PASSWORD: ${OWNER_PASSWORD:-}
+      OWNER_TG_ID: ${OWNER_TG_ID:-}
+
+  bot:
+    build: { context: ., dockerfile: bot/Dockerfile }
+    restart: unless-stopped
+    depends_on: [api]
+    environment:
+      TG_BOT_TOKEN: ${TG_BOT_TOKEN:?задайте TG_BOT_TOKEN в .env}
+      API_URL: http://api:3014
+      API_TOKEN: ${API_TOKEN}
+      PUBLIC_URL: ${PUBLIC_URL:?задайте PUBLIC_URL в .env}
+      HOOK_SECRET: ${HOOK_SECRET:?задайте HOOK_SECRET в .env}
+      ADMIN_TG_IDS: ${ADMIN_TG_IDS:-}
+      TRUST_PROXY: loopback, uniquelocal
+    ports:
+      - "127.0.0.1:3025:3025"
+    volumes:
+      - media-cache:/app/media-cache
+
+  admin:
+    build: { context: ., dockerfile: admin/Dockerfile }
+    restart: unless-stopped
+    depends_on: [api]
+    environment:
+      API_URL: http://api:3014
+      API_TOKEN: ${API_TOKEN}
+      TRUST_PROXY: loopback, uniquelocal
+    ports:
+      - "127.0.0.1:3026:3026"
+
+volumes:
+  db:
+  media-cache:

@@ -1,0 +1,19 @@
+{
+  "name": "w3a-funnel-bot",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Pet Rock VSL funnel Telegram bot (KZ server)",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "grammy": "^1.35.0"
+  }
+}
